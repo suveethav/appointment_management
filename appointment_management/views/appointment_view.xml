@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hospital_appointment_tree" model="ir.ui.view">
+            <field name="name">hospital.appointment.tree</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <tree string="Appointment">
+                    <field name="create_date"/>
+                    <field name="name"/>
+                    <field name="doctor_id"/>
+                    <field name="patient_id"/>
+                    <field name="appointment_date"/>
+                    <field name="appointment_status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hospital_appointment_tutor" model="ir.ui.view">
+            <field name="name">hospital.appointment.form</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <form string="Appointment">
+                    <header>
+                        <button name="approve_appointment" string="Approve" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('appointment_status','!=','New')]}"
+                                groups="appointment_management.group_doctor,appointment_management.group_admin,base.group_system" />
+                        <button name="reject_appointment" string="Reject" type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('appointment_status','!=','New')]}"
+                                groups="appointment_management.group_doctor,appointment_management.group_admin,base.group_system" />
+                        <field name="appointment_status" widget="statusbar" readonly="1"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" attrs="{'readonly': [('appointment_status','!=','New')]}"/>
+                            </h1>
+                        </div>
+                        <br/>
+                        <group colspan="2" col="4" string="Appointment Details">
+                            <field name="create_date" readonly="1"/>
+                            <field name="appointment_date" readonly="1" attrs="{'invisible': [('appointment_status','=','Rejected')]}"/>
+                            <field name="doctor_id" attrs="{'readonly': [('appointment_status','!=','New')]}" options="{'no_open': True,'no_create':True}" required="1"/>
+                            <field name="patient_id" attrs="{'readonly': [('appointment_status','!=','New')]}" options="{'no_open': True,'no_create':True}" required="1"/>
+                            <field name="reason" attrs="{'readonly': [('appointment_status','!=','New')]}" required="1"/>
+                            <field name="rejection_reason" readonly="1" attrs="{'invisible': [('appointment_status','!=','Rejected')]}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="hospital_appointment_search" model="ir.ui.view">
+            <field name="name">hospital.appointment.search</field>
+            <field name="model">hospital.appointment</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Appointment">
+                    <field name="create_date"/>
+                    <field name="name"/>
+                    <field name="appointment_date"/>
+                    <field name="doctor_id"/>
+                    <field name="patient_id"/>
+                    <field name="appointment_status"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Appointment Status" domain="[]" context="{'group_by':'appointment_status'}"/>
+                        <filter string="Doctor Name" domain="[]" context="{'group_by':'doctor_id'}"/>
+                        <filter string="Patient Name" domain="[]" context="{'group_by':'patient_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_hospital_appointment_calendar" model="ir.ui.view">
+            <field name="name">hospital.appointment.calendar</field>
+            <field name="model">hospital.appointment</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <calendar string="Appointments" date_start="appointment_date" date_stop="appointment_date" readonly_form_view_id="664" event_limit="3" color="name">
+                    <field name="name"/>
+                    <field name="name" write_model="hospital.appointment" write_field="name"/>
+
+                </calendar>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_hospital_appointment_graph">
+            <field name="name">hospital.appointment.graph</field>
+            <field name="model">hospital.appointment</field>
+            <field name="arch" type="xml">
+                <graph string="Appointments">
+                    <field name="doctor_id"/>
+                    <field name="patient_id"/>
+                    <field name="appointment_status"/>
+                </graph>
+            </field>
+        </record>
+
+
+        <record id="action_view_hospital_appointment" model="ir.actions.act_window">
+            <field name="name">Appointment</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hospital.appointment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+        </record>
+
+        <menuitem id="hospital_management_main_menu" sequence="1"
+                  name="Hospital Management"
+                  web_icon="appointment_management,static/description/icon.png"
+                  groups="base.group_system,appointment_management.group_doctor,appointment_management.group_patient,appointment_management.group_admin"/>
+        <menuitem id="appointment_sub_menu" parent="hospital_management_main_menu" sequence="1" name="Appointment"
+                  action="action_view_hospital_appointment"
+                  groups="base.group_system,appointment_management.group_doctor,appointment_management.group_patient,appointment_management.group_admin"/>
+
+    </data>
+</odoo>

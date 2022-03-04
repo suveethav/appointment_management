@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="appointment_approval_confirm_wizard">
+        <field name="name">Appointment Approval Confirmation</field>
+        <field name="model">appointment.approval.reject.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="appointment_date" required="1"/>
+                    <field name="appointment_status" invisible="1"/>
+                    <field name="appointment_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="approval_action_confirm" string="Accept" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="appointment_rejection_confirm_wizard">
+        <field name="name">Appointment Rejection Confirmation</field>
+        <field name="model">appointment.approval.reject.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="rejection_reason" required="1"/>
+                    <field name="appointment_status" invisible="1"/>
+                    <field name="appointment_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="rejection_action_confirm" string="Reject" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    </data>
+</odoo>
